@@ -1,0 +1,165 @@
+{% include 'console.html' %}
+<section class="content-header">
+      <h1>
+        Nginx 反向代理
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">反向代理</li>
+      </ol>
+</section>
+
+<section class="content container-fluid">
+        <div class="row">
+        <div class="col-xs-12">
+          <div class="box">
+            <div class="box-header">
+              <h3 class="box-title">Nginx配置文件</h3>
+            </div>
+            <div class="box-body">
+              <div id="example2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
+	          <div class="row">
+                  <div class="col-sm-6">
+	              </div>
+                  <div class="col-sm-6"></div>
+              </div>
+              <div class="row">
+	          <div class="col-sm-12">
+                  <table class="table">
+                      <tr>
+                          <th>环境</th>
+                          <th>项目名称</th>
+                          <th>后端Ip:Port</th>
+{#                          <th>nginx监听端口</th>#}
+                          <th>nginx日志路径</th>
+                          <th>域名</th>
+                          <th>操作</th>
+                      </tr>
+                      <tr>
+                          <td>
+                              <select class="form-control" id="NginxIp">
+                                  <option disabled="">开发</option>
+                                  <option>172.16.255.45</option>
+                                  <option disabled="">测试</option>
+                                  <option>172.16.255.47</option>
+                                  <option disabled="">灰度</option>
+                                  <option>172.16.255.48</option>
+                                  <option disabled="">生产</option>
+                                  <option>172.16.10.194,172.16.10.195</option>
+                              </select>
+                          </td>
+                          <td>
+                                <input type="text" class="form-control" placeholder="ProjectName" aria-describedby="basic-addon1" id="ProjName">
+                          </td>
+                          <td>
+                                <input type="text" class="form-control" placeholder="IP:PORT,IP:PORT" aria-describedby="basic-addon1" id="ProjIpPort">
+                          </td>
+{#                          <td>#}
+{#                                <input type="text" class="form-control" placeholder="80" style="width:110px" aria-describedby="basic-addon1" id="NginxPort">#}
+{#                          </td>#}
+                          <td>
+                                <input type="text" class="form-control" placeholder="/usr/local/nginx/logs" aria-describedby="basic-addon1" id="NginxLog">
+                          </td>
+                          <td>
+                              <div class="input-group" >
+                                <input type="text" class="form-control" placeholder="Domain" aria-describedby="basic-addon2" id="NginxDomain">
+                                <span class="input-group-addon" id="basic-addon2">.sanqimei.com</span>
+                              </div>
+                          </td>
+                          <td><button type="button" class="btn btn-default" onclick="addnginxconf()">添加</button></td>
+                      </tr>
+                  </table>
+              </div>
+              </div>
+              </div>
+            </div>
+
+            <div class="box">
+            <div class="box-header">
+              <h3 class="box-title">Nginx操作</h3>
+            </div>
+            <div class="box-body">
+              <div id="example2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
+	          <div class="row">
+                  <div class="col-sm-6">
+	              </div>
+                  <div class="col-sm-6"></div>
+              </div>
+              <div class="row">
+	          <div class="col-sm-12">
+                  <table class="table">
+                    <tr>
+                        <th>环境</th>
+                        <th>操作</th>
+                    </tr>
+                      <tr>
+                          <td>
+                              <select class="form-control">
+                                  <option>开发环境</option>
+                                  <option>测试环境</option>
+                                  <option>灰度环境</option>
+                                  <option>生产环境</option>
+                              </select>
+                          </td>
+                          <td>
+                              <button type="button" class="btn btn-primary" onclick="check_nginx('checknginx')">检查配置文件</button>
+                              <button type="button" class="btn btn-success" onclick="check_nginx('reloadnginx')">重载</button>
+                              <button type="button" class="btn btn-warning" onclick="check_nginx('rebotnginx')">重启</button>
+                              <button type="button" class="btn btn-danger" onclick="check_nginx('stopnginx')">关闭</button>
+                              <button type="button" class="btn btn-success" onclick="check_nginx('startnginx')">开启</button>
+                          </td>
+                      </tr>
+
+                  </table>
+              </div>
+              </div>
+              </div>
+            </div>
+
+            <script>
+                function addnginxconf(){
+                    var nginx_ip = $("#NginxIp option:selected").val();
+                    var nginx_port = $("#NginxPort").val();
+                    var nginx_log = $("#NginxLog").val();
+                    var proxy_server = $("#ProjIpPort").val();
+                    var project_name = $("#ProjName").val();
+                    var domain = $("#NginxDomain").val();
+                    $.ajax({
+                        url:"/portmanage/",
+                        type:"POST",
+                        data:{'nginx_ip':nginx_ip,'nginx_port':nginx_port,'nginx_log':nginx_log,'proxy_server':proxy_server,'project_name':project_name,'domain':domain},
+                        success:function(arg){
+                            alert(arg);
+                        }
+                    })
+                }
+
+                function check_nginx(args){
+                    var funct = args;
+                    $.ajax({
+                        url:"/checknginx/",
+                        type:"POST",
+                        data:{'funct':funct},
+                        success:function(arg){
+                            alert(arg)
+                            notify(arg);
+                        }
+                    })
+                }
+
+                function notify(args){
+                    var information = args;
+                    $.ajax({
+                        url:'/notify/',
+                        type:"POST",
+                        data:{'information':information},
+                        success:function(){
+                            console.log('webhook通知完成')
+                        }
+                    })
+                }
+
+
+
+            </script>
+{% include 'foot.html' %}
