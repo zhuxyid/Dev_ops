@@ -44,7 +44,7 @@ def portmanage(request):
         print(nginx_conf_temp)
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy)
-        ssh.connect(hostname='47.52.164.96',username='root',password='Zhuxy19900919!')
+        ssh.connect(hostname='47.52.164.96',username='',password='')
         stdin,stdout,stderr = ssh.exec_command('cp /etc/nginx/nginx.conf /etc/nginx/nginx.conf-`date +%F_%H:%M:%S` && echo "{}" > /etc/nginx/temp.conf && sed -i "/devops-setting-0000/r /etc/nginx/temp.conf" /etc/nginx/nginx.conf'.format(nginx_conf_temp))
         #'''devops-setting-0000 需要在nginx配置文件中创建，下次通过这个点来添加nginx配置文件'''
         print(stderr.read().decode())
@@ -56,7 +56,7 @@ def portmanage(request):
 def ssh_check(args):
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy)
-    ssh.connect(hostname='47.52.164.96', username='root', password='Zhuxy19900919!')
+    ssh.connect(hostname='47.52.164.96', username='', password='')
     stdin, stdout, stderr = ssh.exec_command(args)
     message = stderr.read().decode()
     ssh.close()
