@@ -119,11 +119,6 @@ def notify(request):
     return render(request,'samanage/portmanage.html')
 
 
-
-
-
-
-
 def deployhistory(request):
     return render(request,'deploymanage/deployhistory.html',locals())
 
@@ -136,25 +131,3 @@ def codehistory(request):
 def code(request):
     return render(request,'codemanage/code.html',locals())
 
-
-#nginx配置文件模板
-#coding=utf-8
-# nginx_conf = '''
-#
-# server {{
-#     listen       {port};
-#     server_name  {servername};
-#
-#     access_log  {access_log}  main;
-#
-#     location / {{
-#         root   {home};
-#         index  index.html index.htm;
-#         proxy_pass http://127.0.0.1:{proxy_port};
-#     }}
-# }}
-# '''.format(port='8080', servername='cmdb', access_log='/var/log/nginx/cmdb.log',home='/data/python/cmdb/',proxy_port='9999')
-#
-# handle = open('cmdb.conf','w')
-# handle.write(nginx_conf)
-# handle.close()
